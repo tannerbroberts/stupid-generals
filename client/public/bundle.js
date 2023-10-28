@@ -4198,13 +4198,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router/dist/index.js");
 /* harmony import */ var _Lobby_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Lobby.js */ "./client/src/Lobby.js");
 /* harmony import */ var _SocketUpdateProvider_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./SocketUpdateProvider.js */ "./client/src/SocketUpdateProvider.js");
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
-function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-// Typical react app with socket.io
 
 
 
@@ -4218,15 +4211,8 @@ var useAppContext = function useAppContext() {
   return context;
 };
 function App() {
-  var _React$useState = react__WEBPACK_IMPORTED_MODULE_0___default().useState(false),
-    _React$useState2 = _slicedToArray(_React$useState, 2),
-    signedIn = _React$useState2[0],
-    setSignedIn = _React$useState2[1];
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(AppContext.Provider, {
-    value: {
-      signedIn: signedIn,
-      setSignedIn: setSignedIn
-    }
+    value: {}
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_SocketUpdateProvider_js__WEBPACK_IMPORTED_MODULE_2__["default"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_3__.BrowserRouter, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_4__.Routes, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_4__.Route, {
     exact: true,
     path: "/",
@@ -4283,15 +4269,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _ConnectedPlayers_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ConnectedPlayers.js */ "./client/src/ConnectedPlayers.js");
 /* harmony import */ var _StupidGeneralNameInput_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./StupidGeneralNameInput.js */ "./client/src/StupidGeneralNameInput.js");
-/* harmony import */ var _App_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./App.js */ "./client/src/App.js");
+/* harmony import */ var _SocketUpdateProvider_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./SocketUpdateProvider.js */ "./client/src/SocketUpdateProvider.js");
 
 
 
 
 function Lobby() {
-  var _useAppContext = (0,_App_js__WEBPACK_IMPORTED_MODULE_3__.useAppContext)(),
-    signedIn = _useAppContext.signedIn;
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_ConnectedPlayers_js__WEBPACK_IMPORTED_MODULE_1__["default"], null), !signedIn && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_StupidGeneralNameInput_js__WEBPACK_IMPORTED_MODULE_2__["default"], null));
+  var _useSocketUpdateConte = (0,_SocketUpdateProvider_js__WEBPACK_IMPORTED_MODULE_3__.useSocketUpdateContext)(),
+    loggedIn = _useSocketUpdateConte.loggedIn;
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_ConnectedPlayers_js__WEBPACK_IMPORTED_MODULE_1__["default"], null), !loggedIn && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_StupidGeneralNameInput_js__WEBPACK_IMPORTED_MODULE_2__["default"], null));
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Lobby);
 
@@ -4330,20 +4316,39 @@ function useSocketUpdateContext() {
 }
 function SocketUpdateProvider(_ref) {
   var children = _ref.children;
-  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
     _useState2 = _slicedToArray(_useState, 2),
-    clientList = _useState2[0],
-    setClientList = _useState2[1];
-  var signIn = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function (name) {
+    loginErrorState = _useState2[0],
+    setLoginErrorState = _useState2[1];
+  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+    _useState4 = _slicedToArray(_useState3, 2),
+    loggedIn = _useState4[0],
+    setLoggedIn = _useState4[1];
+  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
+    _useState6 = _slicedToArray(_useState5, 2),
+    clientList = _useState6[0],
+    setClientList = _useState6[1];
+  var register = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function (name, password) {
     console.log('signIn event emitted', name);
-    socket.emit('signIn', name);
+    socket.emit('register', {
+      name: name,
+      password: password
+    });
   }, []);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
     socket.on('connect', function () {
       console.log('connected');
-      socket.on('clientsList', function (data) {
-        console.log('clientsList event received', data);
+      socket.on('userNamesList', function (data) {
+        console.log('userNamesList event received', data);
         setClientList(data);
+      });
+      socket.on('loginSuccess', function () {
+        console.log('loginSuccess event received');
+        setLoggedIn(true);
+      });
+      socket.on('loginFailure', function () {
+        console.log('loginFailure event received');
+        setLoginErrorState(true);
       });
     });
     return function () {
@@ -4353,7 +4358,10 @@ function SocketUpdateProvider(_ref) {
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(SocketContext.Provider, {
     value: {
       clientList: clientList,
-      signIn: signIn
+      loggedIn: loggedIn,
+      loginErrorState: loginErrorState,
+      register: register,
+      setLoginErrorState: setLoginErrorState
     }
   }, children);
 }
@@ -4374,14 +4382,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _SocketUpdateProvider_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./SocketUpdateProvider.js */ "./client/src/SocketUpdateProvider.js");
-/* harmony import */ var _App_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./App.js */ "./client/src/App.js");
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
 
 
 function NameInput() {
@@ -4392,36 +4404,97 @@ function NameInput() {
     textAlign: 'center'
   };
   var _useSocketUpdateConte = (0,_SocketUpdateProvider_js__WEBPACK_IMPORTED_MODULE_1__.useSocketUpdateContext)(),
-    signIn = _useSocketUpdateConte.signIn;
-  var _useAppContext = (0,_App_js__WEBPACK_IMPORTED_MODULE_2__.useAppContext)(),
-    setSignedIn = _useAppContext.setSignedIn;
+    register = _useSocketUpdateConte.register,
+    loginErrorState = _useSocketUpdateConte.loginErrorState;
   var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(''),
     _useState2 = _slicedToArray(_useState, 2),
     name = _useState2[0],
     setName = _useState2[1];
-  var handleKeyPress = function handleKeyPress(event) {
-    if (event.key === 'Enter') {
-      signIn(name);
-      setSignedIn(true);
+  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(''),
+    _useState4 = _slicedToArray(_useState3, 2),
+    password = _useState4[0],
+    setPassword = _useState4[1];
+  var nameInputRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+  var passwordInputRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    if (!name) {
+      nameInputRef.current.focus();
+    } else if (!password) {
+      passwordInputRef.current.focus();
     }
+  }, [name, password]);
+  var onRegister = function onRegister(event) {
+    register({
+      name: name,
+      password: password
+    });
   };
+  var onLogin = function onLogin(event) {};
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
       height: '50vh',
       display: 'flex',
+      flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center'
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
     type: "text",
-    style: inputStyle,
+    style: _objectSpread(_objectSpread({}, inputStyle), {}, {
+      border: '2px solid #ccc',
+      borderRadius: '4px',
+      padding: '10px'
+    }),
     placeholder: "Stupid General Name",
     value: name,
     onChange: function onChange(e) {
       return setName(e.target.value);
     },
-    onKeyPress: handleKeyPress
-  }));
+    ref: nameInputRef
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
+    type: "password",
+    style: _objectSpread(_objectSpread({}, inputStyle), {}, {
+      border: '2px solid #ccc',
+      borderRadius: '4px',
+      padding: '10px'
+    }),
+    placeholder: "Password",
+    value: password,
+    onChange: function onChange(e) {
+      return setPassword(e.target.value);
+    },
+    ref: passwordInputRef
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
+    type: "button",
+    onClick: onLogin,
+    style: {
+      marginTop: '10px',
+      fontSize: '24px',
+      backgroundColor: '#87CEFA',
+      color: 'white',
+      padding: '12px 24px',
+      border: 'none',
+      borderRadius: '4px',
+      cursor: 'pointer'
+    }
+  }, "Login"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
+    type: "button",
+    onClick: onRegister,
+    style: {
+      marginTop: '10px',
+      fontSize: '16px',
+      backgroundColor: '#2c3e50',
+      color: 'white',
+      padding: '10px',
+      border: 'none',
+      borderRadius: '4px',
+      cursor: 'pointer'
+    }
+  }, "Register"), loginErrorState && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
+    style: {
+      color: 'red'
+    }
+  }, "Something went wrong with the login process. Please try again."));
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (NameInput);
 
@@ -45225,7 +45298,7 @@ function hasBinary(obj, toJSON) {
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("926a81cba2516237e4f0")
+/******/ 		__webpack_require__.h = () => ("48b974a305f0f3ded24e")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

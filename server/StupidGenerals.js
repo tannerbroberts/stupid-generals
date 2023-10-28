@@ -5,15 +5,25 @@ class StupidGenerals {
     this.clients = [];
   }
 
-  addClient(clientObject) {
-    this.clients.push(clientObject);
+
+
+  attemptToRegisterClient(registrationEvent) {
+    const { name, password, socketId } = registrationEvent;
+    const loginEvent = { name, password, socketId };
+    // Check the database for the client's name
+    if (this.dataBase.login(loginEvent)) {
+      this.socket.to(socketId).emit('loginSuccess');
+      this.clients.push(registrationEvent);
+    } else {
+      this.socket.to(socketId).emit('loginFailure');
+    }
   }
 
   getClients() {
     return this.clients
   }
 
-  getClientsList() {
+  getUserNamesList() {
     return this.getClients().map((client) => client.name);
   }
 
@@ -34,7 +44,7 @@ class StupidGenerals {
   tick() {
     // send each client the list of connected clients
     console.log('sending clients list')
-    this.socket.emit('clientsList', this.getClientsList());
+    this.socket.emit('userNamesList', this.getUserNamesList());
   }
 }
 

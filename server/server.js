@@ -44,19 +44,16 @@ io.on('connection', (socket) => {
 	 * 3. Show a hall of fame for each past game mode
 	 * 4. Show a chat with the most recent messages in larger text than the rest
 	 */
-
 	/** Steps to sign in:
 	 * 1. Ask for the users name
 	 * 2. Start the first-time player tutorial
 	 */
-
 	/** Steps to create a challenge:
 	 * 1. Ask the user for details
 	 *   a. Who do you want to challenge?
 	 *   b. Inform the user on the current status of the challenge, including their place in the queue for that game mode
 	 *   c. If the user cancels the challenge, return to the previous screen and remove the challenge from the challengee's queue
 	 */
-
 	/** When a challenge has been accepted:
 	 * 1. Immediately begin the challenge between the two players
 	 * 2. Send each player's game state to them just like a regular generals.io game
@@ -64,8 +61,8 @@ io.on('connection', (socket) => {
 	 */
 
 	socket.on('disconnect', () => { stupidGenerals.removeClient(socket.id) })
-	socket.on('signIn', (name) => { stupidGenerals.addClient({ name, socketId: socket.id }) })
-	
+	socket.on('register', (data) => { stupidGenerals.attemptToRegisterClient({ ...data, socketId }) })
+
 	socket.on('sendChallenge', () => { })
 	socket.on('acceptChallenge', () => { })
 	socket.on('cancelChallenge', () => { })

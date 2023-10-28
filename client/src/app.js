@@ -14,9 +14,8 @@ export const useAppContext = () => {
 }
 
 export default function App() {
-  const [signedIn, setSignedIn] = React.useState(false)
   return (
-    <AppContext.Provider value={{ signedIn, setSignedIn }}>
+    <AppContext.Provider value={{}}>
       <SocketUpdateProvider>
         <BrowserRouter>
           <Routes>

@@ -1,14 +1,15 @@
 import React from 'react';
 import ConnectedPlayers from './ConnectedPlayers.js';
 import NameInput from './StupidGeneralNameInput.js';
-import { useAppContext } from './App.js';
+import { useSocketUpdateContext } from './SocketUpdateProvider.js';
 
 function Lobby() {
-  const { signedIn } = useAppContext();
+  const { loggedIn } = useSocketUpdateContext();
+
   return (
     <div>
       <ConnectedPlayers />
-      {!signedIn && <NameInput />}
+      {!loggedIn && <NameInput />}
     </div>)
 }
 

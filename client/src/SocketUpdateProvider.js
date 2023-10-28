@@ -18,11 +18,13 @@ export function useSocketUpdateContext() {
 }
 
 export default function SocketUpdateProvider({ children }) {
+  const [loginErrorState, setLoginErrorState] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
   const [clientList, setClientList] = useState([]);
 
-  const signIn = useCallback((name) => {
+  const register = useCallback((name, password) => {
     console.log('signIn event emitted', name);
-    socket.emit('signIn', name);
+    socket.emit('register', { name, password });
   }, []);
 
   useEffect(() => {
@@ -30,9 +32,18 @@ export default function SocketUpdateProvider({ children }) {
     socket.on('connect', () => {
       console.log('connected');
 
-      socket.on('clientsList', (data) => {
-        console.log('clientsList event received', data);
+      socket.on('userNamesList', (data) => {
+        console.log('userNamesList event received', data);
         setClientList(data);
+      });
+
+      socket.on('loginSuccess', () => {
+        console.log('loginSuccess event received');
+        setLoggedIn(true);
+      });
+      socket.on('loginFailure', () => {
+        console.log('loginFailure event received');
+        setLoginErrorState(true);
       });
     });
 
@@ -42,7 +53,7 @@ export default function SocketUpdateProvider({ children }) {
   }, []);
 
   return (
-    <SocketContext.Provider value={{ clientList, signIn }}>
+    <SocketContext.Provider value={{ clientList, loggedIn, loginErrorState, register, setLoginErrorState }}>
       {children}
     </SocketContext.Provider>
   );
