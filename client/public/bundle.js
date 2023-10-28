@@ -4268,6 +4268,53 @@ function ConnectedPlayers() {
 
 /***/ }),
 
+/***/ "./client/src/HallOfFame.js":
+/*!**********************************!*\
+  !*** ./client/src/HallOfFame.js ***!
+  \**********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _SocketUpdateProvider_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./SocketUpdateProvider.js */ "./client/src/SocketUpdateProvider.js");
+
+
+function HallOfFame() {
+  var _useSocketUpdateConte = (0,_SocketUpdateProvider_js__WEBPACK_IMPORTED_MODULE_1__.useSocketUpdateContext)(),
+    hallOfFame = _useSocketUpdateConte.hallOfFame;
+  console.log('hallOfFame', hallOfFame);
+  var listStyle = {
+    height: 'calc(100vh - 100px)',
+    overflowY: 'scroll',
+    fontFamily: 'monospace',
+    fontSize: '20px',
+    padding: '10px',
+    backgroundColor: '#f5f5f5',
+    borderRadius: '10px'
+  };
+  var nameStyle = {
+    fontWeight: 'bold',
+    color: 'green'
+  };
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    style: listStyle
+  }, hallOfFame.map(function (_ref) {
+    var name = _ref.name,
+      you = _ref.you;
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      key: name,
+      style: you ? nameStyle : null
+    }, you ? "".concat(name, " < I'm famous!!!") : name);
+  }));
+}
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (HallOfFame);
+
+/***/ }),
+
 /***/ "./client/src/Lobby.js":
 /*!*****************************!*\
   !*** ./client/src/Lobby.js ***!
@@ -4283,6 +4330,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ConnectedPlayers_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ConnectedPlayers.js */ "./client/src/ConnectedPlayers.js");
 /* harmony import */ var _StupidGeneralNameInput_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./StupidGeneralNameInput.js */ "./client/src/StupidGeneralNameInput.js");
 /* harmony import */ var _SocketUpdateProvider_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./SocketUpdateProvider.js */ "./client/src/SocketUpdateProvider.js");
+/* harmony import */ var _HallOfFame_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./HallOfFame.js */ "./client/src/HallOfFame.js");
+
 
 
 
@@ -4308,7 +4357,7 @@ function Lobby() {
     style: {
       width: '25%'
     }
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, "Not here yet, but will be the hall of fame")));
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_HallOfFame_js__WEBPACK_IMPORTED_MODULE_4__["default"], null)));
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Lobby);
 
@@ -4359,10 +4408,13 @@ function SocketUpdateProvider(_ref) {
     _useState6 = _slicedToArray(_useState5, 2),
     clientList = _useState6[0],
     setClientList = _useState6[1];
+  var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
+    _useState8 = _slicedToArray(_useState7, 2),
+    hallOfFame = _useState8[0],
+    setHallOfFame = _useState8[1];
   var login = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function (_ref2) {
     var name = _ref2.name,
       password = _ref2.password;
-    console.log('login event emitted', name);
     socket.emit('login', {
       name: name,
       password: password
@@ -4371,7 +4423,6 @@ function SocketUpdateProvider(_ref) {
   var register = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function (_ref3) {
     var name = _ref3.name,
       password = _ref3.password;
-    console.log('signIn event emitted', name);
     socket.emit('register', {
       name: name,
       password: password
@@ -4401,6 +4452,9 @@ function SocketUpdateProvider(_ref) {
       socket.on('userNamesList', function (data) {
         setClientList(data);
       });
+      socket.on('hallOfFame', function (data) {
+        setHallOfFame(data);
+      });
     });
     return function () {
       socket.disconnect();
@@ -4410,6 +4464,7 @@ function SocketUpdateProvider(_ref) {
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(SocketContext.Provider, {
     value: {
       clientList: clientList,
+      hallOfFame: hallOfFame,
       loggedIn: loggedIn,
       loginErrorState: loginErrorState,
       login: login,
@@ -45360,7 +45415,7 @@ function hasBinary(obj, toJSON) {
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("d340abd6d315cc4e4b4f")
+/******/ 		__webpack_require__.h = () => ("21c4e892792c9aa9833e")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

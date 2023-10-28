@@ -1,5 +1,3 @@
-
-
 const Player = require('./Player.js');
 
 
@@ -48,6 +46,10 @@ class StupidGenerals {
     return this.clients
   }
 
+  getHallOfFame(name) {
+    return this.dataBase.getHallOfFame().map((entry) => entry.name === name ? { name: entry, you: true } : { name: entry, you: false });
+  }
+
   getUserNamesList(name) {
     return this.getClients().map((client) => client.name === name ? { name: client.name, you: true } : { name: client.name, you: false});
   }
@@ -73,6 +75,7 @@ class StupidGenerals {
     // emit the user names list to all logged in clients
     this.clients.forEach((client) => {
       this.socket.to(client.socketId).emit('userNamesList', this.getUserNamesList(client.name));
+      this.socket.to(client.socketId).emit('hallOfFame', this.getHallOfFame(client.name));
     });
   }
 }

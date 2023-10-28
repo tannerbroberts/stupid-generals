@@ -21,14 +21,13 @@ export default function SocketUpdateProvider({ children }) {
   const [loginErrorState, setLoginErrorState] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
   const [clientList, setClientList] = useState([]);
+  const [hallOfFame, setHallOfFame] = useState([]);
 
   const login = useCallback(({ name, password }) => {
-    console.log('login event emitted', name);
     socket.emit('login', { name, password });
   }, []);
 
   const register = useCallback(({ name, password }) => {
-    console.log('signIn event emitted', name);
     socket.emit('register', { name, password });
   }, []);
 
@@ -54,6 +53,9 @@ export default function SocketUpdateProvider({ children }) {
       socket.on('userNamesList', (data) => {
         setClientList(data);
       });
+      socket.on('hallOfFame', (data) => {
+        setHallOfFame(data);
+      });
     });
 
     return () => {
@@ -63,9 +65,8 @@ export default function SocketUpdateProvider({ children }) {
   }, []);
 
   return (
-    <SocketContext.Provider value={{ clientList, loggedIn, loginErrorState, login, register, setLoginErrorState }}>
+    <SocketContext.Provider value={{ clientList, hallOfFame, loggedIn, loginErrorState, login, register, setLoginErrorState }}>
       {children}
     </SocketContext.Provider>
   );
 };
-

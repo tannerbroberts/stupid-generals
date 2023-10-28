@@ -13,6 +13,15 @@ class DataBase {
     }
   }
 
+  getHallOfFame() {
+    // If the hallOfFame file doesn't exist, create it
+    if (!fs.existsSync(folderPath + 'hallOfFame.json')) {
+      fs.writeFileSync(folderPath + 'hallOfFame.json', JSON.stringify(['no entries yet']))
+      return [{ name: 'no entries yet', you: false }]
+    }
+    return JSON.parse(fs.readFileSync(folderPath + 'hallOfFame.json'))
+  }
+
   loadUser(name) {
     if (!this.userProfileExists(name)) throw new Error(`using getUser on a user that doesn't exist`)
     const user = fs.readFileSync(getUserFolder(name))

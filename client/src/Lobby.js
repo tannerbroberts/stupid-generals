@@ -2,6 +2,7 @@ import React from 'react';
 import ConnectedPlayers from './ConnectedPlayers.js';
 import NameInput from './StupidGeneralNameInput.js';
 import { useSocketUpdateContext } from './SocketUpdateProvider.js';
+import HallOfFame from './HallOfFame.js';
 
 function Lobby() {
   const { loggedIn } = useSocketUpdateContext();
@@ -15,7 +16,7 @@ function Lobby() {
         {!loggedIn && <NameInput />}
       </div>
       <div style={{ width: '25%' }}>
-        <div>Not here yet, but will be the hall of fame</div>
+        <HallOfFame />
       </div>
     </div>
   );
