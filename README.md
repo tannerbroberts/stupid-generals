@@ -1,7 +1,7 @@
 # Stupid-generals
 A server that runs a stupid version of the beloved game, generals.io, without all the messy bits like the client slug for actually playing the game. Meant as a parody of the original game, and to keep the memory alive in the hearts of players in the rapidly developing world of AI content developers creating redstone circuits made with 50% copper bulbs.
 ## Explanation of the game:
-Developers and strategists alike love the game, but they like custom bots and client UX for neuanced gameplay even more.
+Developers and strategists alike love the game, but they like custom bots and client UX for neuanced, superfast, advanced gameplay even more.
 #### Q: Can AI play?
   - Yes, obviously
 #### Q: Can I build a client UI for me to play against AI with custom commands?
