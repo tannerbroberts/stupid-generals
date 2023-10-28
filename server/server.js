@@ -62,6 +62,7 @@ io.on('connection', (socket) => {
 	 */
 
 	socket.on('disconnect', () => { stupidGenerals.removeClient(socket.id) })
+	socket.on('login', (data) => { stupidGenerals.attemptToLogin({ ...data, socketId }) })
 	socket.on('register', (data) => { stupidGenerals.attemptToRegisterClient({ ...data, socketId }) })
 
 	socket.on('sendChallenge', () => { })

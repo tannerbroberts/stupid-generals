@@ -4240,15 +4240,28 @@ __webpack_require__.r(__webpack_exports__);
 function ConnectedPlayers() {
   var _useSocketUpdateConte = (0,_SocketUpdateProvider_js__WEBPACK_IMPORTED_MODULE_1__.useSocketUpdateContext)(),
     clientList = _useSocketUpdateConte.clientList;
+  var listStyle = {
+    height: 'calc(100vh - 100px)',
+    overflowY: 'scroll',
+    fontFamily: 'monospace',
+    fontSize: '20px',
+    padding: '10px',
+    backgroundColor: '#f5f5f5',
+    borderRadius: '10px'
+  };
+  var nameStyle = {
+    fontWeight: 'bold',
+    color: 'green'
+  };
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    style: {
-      overflowY: 'scroll',
-      height: '200px'
-    }
-  }, clientList.map(function (player) {
+    style: listStyle
+  }, clientList.map(function (_ref) {
+    var name = _ref.name,
+      you = _ref.you;
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-      key: player
-    }, player);
+      key: name,
+      style: you ? nameStyle : null
+    }, you ? "".concat(name, " < Look Dad! It's me!!") : name);
   }));
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (ConnectedPlayers);
@@ -4277,7 +4290,25 @@ __webpack_require__.r(__webpack_exports__);
 function Lobby() {
   var _useSocketUpdateConte = (0,_SocketUpdateProvider_js__WEBPACK_IMPORTED_MODULE_3__.useSocketUpdateContext)(),
     loggedIn = _useSocketUpdateConte.loggedIn;
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_ConnectedPlayers_js__WEBPACK_IMPORTED_MODULE_1__["default"], null), !loggedIn && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_StupidGeneralNameInput_js__WEBPACK_IMPORTED_MODULE_2__["default"], null));
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    style: {
+      display: 'flex',
+      flexDirection: 'row',
+      width: '100%'
+    }
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    style: {
+      width: '25%'
+    }
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_ConnectedPlayers_js__WEBPACK_IMPORTED_MODULE_1__["default"], null)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    style: {
+      width: '50%'
+    }
+  }, !loggedIn && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_StupidGeneralNameInput_js__WEBPACK_IMPORTED_MODULE_2__["default"], null)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    style: {
+      width: '25%'
+    }
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, "Not here yet, but will be the hall of fame")));
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Lobby);
 
@@ -4328,9 +4359,18 @@ function SocketUpdateProvider(_ref) {
     _useState6 = _slicedToArray(_useState5, 2),
     clientList = _useState6[0],
     setClientList = _useState6[1];
-  var register = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function (_ref2) {
+  var login = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function (_ref2) {
     var name = _ref2.name,
       password = _ref2.password;
+    console.log('login event emitted', name);
+    socket.emit('login', {
+      name: name,
+      password: password
+    });
+  }, []);
+  var register = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function (_ref3) {
+    var name = _ref3.name,
+      password = _ref3.password;
     console.log('signIn event emitted', name);
     socket.emit('register', {
       name: name,
@@ -4372,6 +4412,7 @@ function SocketUpdateProvider(_ref) {
       clientList: clientList,
       loggedIn: loggedIn,
       loginErrorState: loginErrorState,
+      login: login,
       register: register,
       setLoginErrorState: setLoginErrorState
     }
@@ -4418,7 +4459,8 @@ function NameInput() {
   };
   var _useSocketUpdateConte = (0,_SocketUpdateProvider_js__WEBPACK_IMPORTED_MODULE_1__.useSocketUpdateContext)(),
     register = _useSocketUpdateConte.register,
-    loginErrorState = _useSocketUpdateConte.loginErrorState;
+    loginErrorState = _useSocketUpdateConte.loginErrorState,
+    login = _useSocketUpdateConte.login;
   var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)((_JSON$parse = JSON.parse(localStorage.getItem('stupidGeneralsCredentials'))) === null || _JSON$parse === void 0 ? void 0 : _JSON$parse.name),
     _useState2 = _slicedToArray(_useState, 2),
     name = _useState2[0],
@@ -4432,21 +4474,23 @@ function NameInput() {
     setPassword = _useState4[1];
   var nameInputRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
   var passwordInputRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
-  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+  var onRegister = function onRegister(event) {
     if (!name) {
       nameInputRef.current.focus();
     } else if (!password) {
       passwordInputRef.current.focus();
+    } else {
+      register({
+        name: name,
+        password: password
+      });
     }
-  }, [name, password]);
-  var onRegister = function onRegister(event) {
-    register({
+  };
+  var onLogin = function onLogin(event) {
+    login({
       name: name,
       password: password
     });
-  };
-  var onLogin = function onLogin(event) {
-    console.log('not implemented yet');
   };
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
@@ -4512,7 +4556,7 @@ function NameInput() {
     style: {
       color: 'red'
     }
-  }, "Something went wrong with the login process. Please try again."));
+  }, "Something went wrong with the login process do something different."));
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (NameInput);
 
@@ -45316,7 +45360,7 @@ function hasBinary(obj, toJSON) {
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("8280363040b2461e9679")
+/******/ 		__webpack_require__.h = () => ("d340abd6d315cc4e4b4f")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

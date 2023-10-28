@@ -20,7 +20,7 @@ class DataBase {
   }
 
   login(loginEvent) {
-    const { name, password, socketId } = loginEvent;
+    const { name, password } = loginEvent;
     // Check if the user exists
     if (!this.userProfileExists(name)) return false
     // Check if the password matches

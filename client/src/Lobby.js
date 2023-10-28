@@ -7,10 +7,18 @@ function Lobby() {
   const { loggedIn } = useSocketUpdateContext();
 
   return (
-    <div>
-      <ConnectedPlayers />
-      {!loggedIn && <NameInput />}
-    </div>)
+    <div style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+      <div style={{ width: '25%' }}>
+        <ConnectedPlayers />
+      </div>
+      <div style={{ width: '50%' }}>
+        {!loggedIn && <NameInput />}
+      </div>
+      <div style={{ width: '25%' }}>
+        <div>Not here yet, but will be the hall of fame</div>
+      </div>
+    </div>
+  );
 }
 
 export default Lobby;

@@ -22,6 +22,11 @@ export default function SocketUpdateProvider({ children }) {
   const [loggedIn, setLoggedIn] = useState(false);
   const [clientList, setClientList] = useState([]);
 
+  const login = useCallback(({ name, password }) => {
+    console.log('login event emitted', name);
+    socket.emit('login', { name, password });
+  }, []);
+
   const register = useCallback(({ name, password }) => {
     console.log('signIn event emitted', name);
     socket.emit('register', { name, password });
@@ -58,7 +63,7 @@ export default function SocketUpdateProvider({ children }) {
   }, []);
 
   return (
-    <SocketContext.Provider value={{ clientList, loggedIn, loginErrorState, register, setLoginErrorState }}>
+    <SocketContext.Provider value={{ clientList, loggedIn, loginErrorState, login, register, setLoginErrorState }}>
       {children}
     </SocketContext.Provider>
   );
