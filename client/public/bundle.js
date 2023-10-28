@@ -4544,7 +4544,7 @@ function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" !=
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
-function NameInput() {
+function StupidGeneralNameInput() {
   var _JSON$parse;
   var inputStyle = {
     fontFamily: 'monospace',
@@ -4653,7 +4653,7 @@ function NameInput() {
     }
   }, "Something went wrong with the login process do something different."));
 }
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (NameInput);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (StupidGeneralNameInput);
 
 /***/ }),
 
@@ -45455,7 +45455,7 @@ function hasBinary(obj, toJSON) {
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("8ee8571078cfedf18c78")
+/******/ 		__webpack_require__.h = () => ("5563c20e84d6e489c024")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */
