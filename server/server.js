@@ -5,7 +5,6 @@ const cors = require('cors')
 const path = require('path')
 const DataBase = require('./DataBase.js')
 const StupidGenerals = require('./StupidGenerals.js')
-// Create an express app
 
 const app = express()
 // Create a server and enable cors
@@ -19,7 +18,7 @@ express.static.mime.define({ 'application/json': ['map'] })
 
 // Define a single route for every URL (the react client does the routing)
 app.get('*', (req, res) => {
-	// send the react app's index.html file
+	// send the react index.html file
 	res.sendFile(path.join(__dirname, '../client/public/index.html'))
 })
 

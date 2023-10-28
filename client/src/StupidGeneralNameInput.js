@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useSocketUpdateContext } from './SocketUpdateProvider.js';
-import { useAppContext } from './app.js';
+import { useAppContext } from './App.js';
 
 function NameInput() {
   const inputStyle = {
