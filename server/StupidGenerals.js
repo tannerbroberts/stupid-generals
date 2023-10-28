@@ -17,7 +17,7 @@ class StupidGenerals {
       this.socket.to(socketId).emit('loginFailure');
       return;
     }
-    // Check the database for the client's name
+    // Check the database for the client's name and password
     if (this.dataBase.login(loginEvent)) {
       console.log('loginSuccess event emitted');
       this.socket.to(socketId).emit('loginSuccess');
