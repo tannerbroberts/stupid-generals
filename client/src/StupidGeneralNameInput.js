@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { useSocketUpdateContext } from './SocketUpdateProvider.js';
 
-function NameInput() {
+function StupidGeneralNameInput() {
   const inputStyle = {
     fontFamily: 'monospace',
     fontWeight: 'bold',
@@ -38,5 +38,4 @@ function NameInput() {
     </div>
   );
 }
-export default NameInput;
-
+export default StupidGeneralNameInput;

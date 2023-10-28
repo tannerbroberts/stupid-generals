@@ -4268,6 +4268,44 @@ function ConnectedPlayers() {
 
 /***/ }),
 
+/***/ "./client/src/GeneralsMainDisplay.js":
+/*!*******************************************!*\
+  !*** ./client/src/GeneralsMainDisplay.js ***!
+  \*******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+
+function GeneralsMainDisplay() {
+  var canvasRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    var canvas = canvasRef.current;
+    var ctx = canvas.getContext('2d');
+    // draw on the canvas here
+    // A yellow smily face with black border
+    ctx.beginPath();
+    ctx.arc(75, 75, 50, 0, Math.PI * 2, true); // Outer circle
+    ctx.moveTo(110, 75);
+    ctx.arc(75, 75, 35, 0, Math.PI, false); // Mouth (clockwise)
+    ctx.moveTo(65, 65);
+    ctx.arc(60, 65, 5, 0, Math.PI * 2, true); // Left eye
+    ctx.moveTo(95, 65);
+    ctx.arc(90, 65, 5, 0, Math.PI * 2, true); // Right eye
+    ctx.stroke();
+  }, []);
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("canvas", {
+    ref: canvasRef
+  });
+}
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (GeneralsMainDisplay);
+
+/***/ }),
+
 /***/ "./client/src/HallOfFame.js":
 /*!**********************************!*\
   !*** ./client/src/HallOfFame.js ***!
@@ -4331,6 +4369,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _StupidGeneralNameInput_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./StupidGeneralNameInput.js */ "./client/src/StupidGeneralNameInput.js");
 /* harmony import */ var _SocketUpdateProvider_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./SocketUpdateProvider.js */ "./client/src/SocketUpdateProvider.js");
 /* harmony import */ var _HallOfFame_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./HallOfFame.js */ "./client/src/HallOfFame.js");
+/* harmony import */ var _GeneralsMainDisplay_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./GeneralsMainDisplay.js */ "./client/src/GeneralsMainDisplay.js");
+
 
 
 
@@ -4353,7 +4393,7 @@ function Lobby() {
     style: {
       width: '50%'
     }
-  }, !loggedIn && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_StupidGeneralNameInput_js__WEBPACK_IMPORTED_MODULE_2__["default"], null)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+  }, !loggedIn ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_StupidGeneralNameInput_js__WEBPACK_IMPORTED_MODULE_2__["default"], null) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_GeneralsMainDisplay_js__WEBPACK_IMPORTED_MODULE_5__["default"], null)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
       width: '25%'
     }
@@ -45415,7 +45455,7 @@ function hasBinary(obj, toJSON) {
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("21c4e892792c9aa9833e")
+/******/ 		__webpack_require__.h = () => ("8ee8571078cfedf18c78")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

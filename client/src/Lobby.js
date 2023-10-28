@@ -3,6 +3,7 @@ import ConnectedPlayers from './ConnectedPlayers.js';
 import NameInput from './StupidGeneralNameInput.js';
 import { useSocketUpdateContext } from './SocketUpdateProvider.js';
 import HallOfFame from './HallOfFame.js';
+import GeneralsMainDisplay from './GeneralsMainDisplay.js';
 
 function Lobby() {
   const { loggedIn } = useSocketUpdateContext();
@@ -13,7 +14,7 @@ function Lobby() {
         <ConnectedPlayers />
       </div>
       <div style={{ width: '50%' }}>
-        {!loggedIn && <NameInput />}
+        {!loggedIn ? <NameInput /> : <GeneralsMainDisplay />}
       </div>
       <div style={{ width: '25%' }}>
         <HallOfFame />
