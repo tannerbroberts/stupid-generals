@@ -63,13 +63,14 @@ io.on('connection', (socket) => {
 	 * 3. Set match count updates for all to be seen all throughout the challenge
 	 */
 
+	socket.on('disconnect', () => { stupidGenerals.removeClient(socket.id) })
 	socket.on('signIn', (name) => { stupidGenerals.addClient({ name, socketId: socket.id }) })
+	
 	socket.on('sendChallenge', () => { })
 	socket.on('acceptChallenge', () => { })
 	socket.on('cancelChallenge', () => { })
 	socket.on('declineChallenge', () => { })
 	socket.on('clientMoves', () => { })
-	socket.on('disconnect', () => { stupidGenerals.removeClient(socket.id) })
 })
 
 // Start the game
