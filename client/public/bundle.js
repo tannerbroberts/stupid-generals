@@ -4283,21 +4283,6 @@ __webpack_require__.r(__webpack_exports__);
 
 function GeneralsMainDisplay() {
   var canvasRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
-  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
-    var canvas = canvasRef.current;
-    var ctx = canvas.getContext('2d');
-    // draw on the canvas here
-    // A yellow smily face with black border
-    ctx.beginPath();
-    ctx.arc(75, 75, 50, 0, Math.PI * 2, true); // Outer circle
-    ctx.moveTo(110, 75);
-    ctx.arc(75, 75, 35, 0, Math.PI, false); // Mouth (clockwise)
-    ctx.moveTo(65, 65);
-    ctx.arc(60, 65, 5, 0, Math.PI * 2, true); // Left eye
-    ctx.moveTo(95, 65);
-    ctx.arc(90, 65, 5, 0, Math.PI * 2, true); // Right eye
-    ctx.stroke();
-  }, []);
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("canvas", {
     ref: canvasRef
   });
@@ -45455,7 +45440,7 @@ function hasBinary(obj, toJSON) {
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("5563c20e84d6e489c024")
+/******/ 		__webpack_require__.h = () => ("46d02121630b8f1d1ed1")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

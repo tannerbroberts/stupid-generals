@@ -11,6 +11,17 @@ Developers and strategists alike love the game, but they like custom bots and cl
 # The current goals in order of priority as of October 28th 2023:
 1) Finish the server game code
     - Login users
+      - TODO:
+        - Hash name and password
+        - Store player data on logout
+        - Social platform login
+        - SessionID authorization
+      - Done:
+        - User can login with a name an a password
+        - Multiple users cannot login with the same user name
+        - Wrong password gives error state
+        - Registration -> Login
+        - Error State
     - Allow for selecting a game mode which will put the client in line to play, and indicate about how long it will take to find a match. The match will automatically start when it's their turn.
     - Present three game modes:
       - Evolution: Changes the play environment slowly over time. Or suddenly in the case of an occasional extinction event...

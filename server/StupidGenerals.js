@@ -32,12 +32,11 @@ class StupidGenerals {
     const { name, password, socketId } = registrationEvent;
     // Check the database for the client's name
     if (this.dataBase.registerNewUser(registrationEvent)) {
-      console.log('registerSuccess event emitted')
       this.socket.to(socketId).emit('registrationSuccess', { name, password });
-      this.socket.to(socketId).emit('loginSuccess');
-      this.clients.push(new Player(name, socketId));
+
+      const loginEvent = { name, password, socketId };
+      this.attemptToLogin(loginEvent);
     } else {
-      console.log('registerFailure event emitted')
       this.socket.to(socketId).emit('loginFailure');
     }
   }
@@ -58,6 +57,15 @@ class StupidGenerals {
     this.clients = this.clients.filter((client) => client.socketId !== socketId);
   }
 
+  removeStaleClients() {
+    this.clients.forEach((client) => {
+      const socket = this.socket.sockets.connected[client.socketId];
+      if (!socket || !socket.connected) {
+        this.removeClient(client.socketId);
+      }
+    });
+  }
+
   start() {
     this.intervalIntegerId = setInterval(() => {
       this.tick();
@@ -69,9 +77,6 @@ class StupidGenerals {
   }
 
   tick() {
-    // send each client the list of connected clients
-    console.log('sending clients list')
-
     // emit the user names list to all logged in clients
     this.clients.forEach((client) => {
       this.socket.to(client.socketId).emit('userNamesList', this.getUserNamesList(client.name));
