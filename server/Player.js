@@ -4,3 +4,5 @@ class Player {
     this.socketId = socketId;
   }
 }
+
+module.exports = Player;

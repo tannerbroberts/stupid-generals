@@ -4340,9 +4340,6 @@ function SocketUpdateProvider(_ref) {
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
     socket.on('connect', function () {
       console.log('connected');
-      socket.on('userNamesList', function (data) {
-        setClientList(data);
-      });
       socket.on('loginSuccess', function () {
         console.log('loginSuccess event received');
         setLoggedIn(true);
@@ -4351,9 +4348,23 @@ function SocketUpdateProvider(_ref) {
         console.log('loginFailure event received');
         setLoginErrorState(true);
       });
+      socket.on('registrationSuccess', function (regstrationSuccessEvent) {
+        var name = regstrationSuccessEvent.name,
+          password = regstrationSuccessEvent.password;
+        console.log('registrationSuccess event received');
+        // Set the name and password values in local storage under the key 'stupidGenerals'
+        localStorage.setItem('stupidGeneralsCredentials', JSON.stringify({
+          name: name,
+          password: password
+        }));
+      });
+      socket.on('userNamesList', function (data) {
+        setClientList(data);
+      });
     });
     return function () {
       socket.disconnect();
+      socket.off();
     };
   }, []);
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(SocketContext.Provider, {
@@ -4398,6 +4409,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 function NameInput() {
+  var _JSON$parse;
   var inputStyle = {
     fontFamily: 'monospace',
     fontWeight: 'bold',
@@ -4407,11 +4419,14 @@ function NameInput() {
   var _useSocketUpdateConte = (0,_SocketUpdateProvider_js__WEBPACK_IMPORTED_MODULE_1__.useSocketUpdateContext)(),
     register = _useSocketUpdateConte.register,
     loginErrorState = _useSocketUpdateConte.loginErrorState;
-  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(''),
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)((_JSON$parse = JSON.parse(localStorage.getItem('stupidGeneralsCredentials'))) === null || _JSON$parse === void 0 ? void 0 : _JSON$parse.name),
     _useState2 = _slicedToArray(_useState, 2),
     name = _useState2[0],
     setName = _useState2[1];
-  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(''),
+  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(function () {
+      var _JSON$parse2;
+      return (_JSON$parse2 = JSON.parse(localStorage.getItem('stupidGeneralsCredentials'))) === null || _JSON$parse2 === void 0 ? void 0 : _JSON$parse2.password;
+    }),
     _useState4 = _slicedToArray(_useState3, 2),
     password = _useState4[0],
     setPassword = _useState4[1];
@@ -45301,7 +45316,7 @@ function hasBinary(obj, toJSON) {
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("eae865c7d5433b6f47fc")
+/******/ 		__webpack_require__.h = () => ("8280363040b2461e9679")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

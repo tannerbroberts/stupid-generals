@@ -32,10 +32,6 @@ export default function SocketUpdateProvider({ children }) {
     socket.on('connect', () => {
       console.log('connected');
 
-      socket.on('userNamesList', (data) => {
-        setClientList(data);
-      });
-
       socket.on('loginSuccess', () => {
         console.log('loginSuccess event received');
         setLoggedIn(true);
@@ -44,10 +40,20 @@ export default function SocketUpdateProvider({ children }) {
         console.log('loginFailure event received');
         setLoginErrorState(true);
       });
+      socket.on('registrationSuccess', (regstrationSuccessEvent) => {
+        const { name, password } = regstrationSuccessEvent;
+        console.log('registrationSuccess event received');
+        // Set the name and password values in local storage under the key 'stupidGenerals'
+        localStorage.setItem('stupidGeneralsCredentials', JSON.stringify({ name, password }));
+      });
+      socket.on('userNamesList', (data) => {
+        setClientList(data);
+      });
     });
 
     return () => {
       socket.disconnect();
+      socket.off();
     };
   }, []);
 

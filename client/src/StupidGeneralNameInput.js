@@ -11,8 +11,8 @@ function NameInput() {
 
   const { register, loginErrorState } = useSocketUpdateContext();
 
-  const [name, setName] = useState('');
-  const [password, setPassword] = useState('');
+  const [name, setName] = useState(JSON.parse(localStorage.getItem('stupidGeneralsCredentials'))?.name);
+  const [password, setPassword] = useState(() => JSON.parse(localStorage.getItem('stupidGeneralsCredentials'))?.password);
 
   const nameInputRef = useRef(null);
   const passwordInputRef = useRef(null);
