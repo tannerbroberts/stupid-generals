@@ -51,7 +51,7 @@ class StupidGenerals {
   }
 
   getUserNamesList(name) {
-    return this.getClients().map((client) => client.name === name ? { name: client.name, you: true } : { name: client.name, you: false});
+    return this.getClients().map((client) => client.name === name ? { name: client.name, you: true } : { name: client.name, you: false });
   }
 
   removeClient(socketId) {
@@ -75,8 +75,9 @@ class StupidGenerals {
     // emit the user names list to all logged in clients
     this.clients.forEach((client) => {
       this.socket.to(client.socketId).emit('userNamesList', this.getUserNamesList(client.name));
-      this.socket.to(client.socketId).emit('hallOfFame', this.getHallOfFame(client.name));
+      if (this.tickCount % 60 === 0) this.socket.to(client.socketId).emit('hallOfFame', this.getHallOfFame(client.name));
     });
+    this.tickCount++;
   }
 }
 
