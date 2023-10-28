@@ -22,7 +22,7 @@ export default function SocketUpdateProvider({ children }) {
   const [loggedIn, setLoggedIn] = useState(false);
   const [clientList, setClientList] = useState([]);
 
-  const register = useCallback((name, password) => {
+  const register = useCallback(({ name, password }) => {
     console.log('signIn event emitted', name);
     socket.emit('register', { name, password });
   }, []);
@@ -33,7 +33,6 @@ export default function SocketUpdateProvider({ children }) {
       console.log('connected');
 
       socket.on('userNamesList', (data) => {
-        console.log('userNamesList event received', data);
         setClientList(data);
       });
 

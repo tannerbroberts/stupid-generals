@@ -13,9 +13,55 @@ class DataBase {
     }
   }
 
+  loadUser(name) {
+    if (!this.userProfileExists(name)) throw new Error(`using getUser on a user that doesn't exist`)
+    const user = fs.readFileSync(getUserFolder(name))
+    return JSON.parse(user)
+  }
 
+  login(loginEvent) {
+    const { name, password, socketId } = loginEvent;
+    // Check if the user exists
+    if (!this.userProfileExists(name)) return false
+    // Check if the password matches
+    if (!this.userPasswordMatches(name, password)) return false
+
+    return true
+  }
+
+  registerNewUser(registrationEvent) {
+    const { name, password } = registrationEvent;
+    // Check if the user exists
+    if (this.userProfileExists(name)) return false
+    // Create the user
+    const user = { name, password }
+    console.log('saving user', user)
+    this.saveUser(user)
+    return true
+  }
+
+  saveUser(user) {
+    console.log('saveUser', user)
+    if (!user.name) throw new Error(`using saveUser on a user that doesn't have a name`)
+    if (!user.password) throw new Error(`using saveUser on a user that doesn't have a password`)
+    fs.writeFileSync(getUserFolder(user.name), JSON.stringify(user))
+  }
+
+  userProfileExists(name) {
+    if (!name) throw new Error(`using userProfileExists without a name argument`)
+    return fs.existsSync(getUserFolder(name))
+  }
+
+  userPasswordMatches(name, password) {
+    if (!this.userProfileExists(name)) throw new Error(`using userPasswordMatches on a user that doesn't exist`)
+    const user = this.loadUser(name)
+    return user.password === password
+  }
 
 }
 
+function getUserFolder(name) {
+  return `${folderPath}/users/${name}.json`
+}
 
 module.exports = DataBase

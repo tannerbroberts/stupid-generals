@@ -29,7 +29,7 @@ function NameInput() {
     register({ name, password });
   };
 
-  const onLogin = (event) => { };
+  const onLogin = (event) => { console.log('not implemented yet') };
 
   return (
     <div style={{ height: '50vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>

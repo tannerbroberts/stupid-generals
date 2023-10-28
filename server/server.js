@@ -28,6 +28,7 @@ const dataBase = new DataBase()
 const stupidGenerals = new StupidGenerals(io, dataBase)
 
 io.on('connection', (socket) => {
+	const socketId = socket.id
 	/** The lobby should:
 	 * 1. Show the user's name in multiple lists
 	 *   a. List of all users sorted alphabetically (also shows how many challenges currently waiting for them)

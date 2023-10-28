@@ -4328,7 +4328,9 @@ function SocketUpdateProvider(_ref) {
     _useState6 = _slicedToArray(_useState5, 2),
     clientList = _useState6[0],
     setClientList = _useState6[1];
-  var register = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function (name, password) {
+  var register = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function (_ref2) {
+    var name = _ref2.name,
+      password = _ref2.password;
     console.log('signIn event emitted', name);
     socket.emit('register', {
       name: name,
@@ -4339,7 +4341,6 @@ function SocketUpdateProvider(_ref) {
     socket.on('connect', function () {
       console.log('connected');
       socket.on('userNamesList', function (data) {
-        console.log('userNamesList event received', data);
         setClientList(data);
       });
       socket.on('loginSuccess', function () {
@@ -4429,7 +4430,9 @@ function NameInput() {
       password: password
     });
   };
-  var onLogin = function onLogin(event) {};
+  var onLogin = function onLogin(event) {
+    console.log('not implemented yet');
+  };
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
       height: '50vh',
@@ -45298,7 +45301,7 @@ function hasBinary(obj, toJSON) {
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("48b974a305f0f3ded24e")
+/******/ 		__webpack_require__.h = () => ("eae865c7d5433b6f47fc")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

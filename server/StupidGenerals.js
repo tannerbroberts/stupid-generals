@@ -1,3 +1,5 @@
+const Player = require('./Player');
+
 class StupidGenerals {
   constructor(socket, dataBase) {
     this.socket = socket;
@@ -9,12 +11,13 @@ class StupidGenerals {
 
   attemptToRegisterClient(registrationEvent) {
     const { name, password, socketId } = registrationEvent;
-    const loginEvent = { name, password, socketId };
     // Check the database for the client's name
-    if (this.dataBase.login(loginEvent)) {
+    if (this.dataBase.registerNewUser(registrationEvent)) {
+      console.log('registerSuccess event emitted')
       this.socket.to(socketId).emit('loginSuccess');
-      this.clients.push(registrationEvent);
+      this.clients.push(new Player(name, socketId));
     } else {
+      console.log('registerFailure event emitted')
       this.socket.to(socketId).emit('loginFailure');
     }
   }
