@@ -3,7 +3,6 @@ const http = require('http')
 const { Server: SocketIO } = require('socket.io')
 const cors = require('cors')
 const path = require('path')
-const Aether = require('./pages/Aether/Aether.js')
 const DataBase = require('./DataBase.js')
 // Create an express app
 
@@ -23,19 +22,13 @@ app.get('*', (req, res) => {
 	res.sendFile(path.join(__dirname, '../client/public/index.html'))
 })
 
-
-
 // All the socket event handlers
 const io = new SocketIO(server)
 const dataBase = new DataBase()
 
-// Declare the aether instance (top level game object, main menu-ish)
-const aether = new Aether(io, dataBase, 10)
-
 // Listen for the interrupt signal (ctrl-c)
 process.on('SIGINT', () => {
 	console.log('\n\nstopping server, saving data... okay, not really, but eventually\n')
-	aether.stop()
 	process.exit()
 })
 
