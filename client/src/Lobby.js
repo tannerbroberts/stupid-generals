@@ -4,22 +4,25 @@ import NameInput from './StupidGeneralNameInput.js';
 import { useSocketUpdateContext } from './SocketUpdateProvider.js';
 import HallOfFame from './HallOfFame.js';
 import GeneralsMainDisplay from './GeneralsMainDisplay.js';
+import StupidGeneralNameInput from './StupidGeneralNameInput.js';
 
 function Lobby() {
-  const { loggedIn } = useSocketUpdateContext();
+  const { loggedIn, connected } = useSocketUpdateContext();
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
-      <div style={{ width: '25%' }}>
-        <ConnectedPlayers />
-      </div>
-      <div style={{ width: '50%' }}>
-        {!loggedIn ? <NameInput /> : <GeneralsMainDisplay />}
-      </div>
-      <div style={{ width: '25%' }}>
-        <HallOfFame />
-      </div>
-    </div>
+    (connected) ? (
+      <div style={{ display: 'flex', flexDirection: 'row', width: '100%' }} >
+        <div style={{ width: '25%' }}>
+          <ConnectedPlayers />
+        </div>
+        <div style={{ width: '50%' }}>
+          {loggedIn ? <GeneralsMainDisplay /> : <StupidGeneralNameInput />}
+        </div>
+        <div style={{ width: '25%' }}>
+          <HallOfFame />
+        </div>
+      </div >
+    ) : <div />
   );
 }
 

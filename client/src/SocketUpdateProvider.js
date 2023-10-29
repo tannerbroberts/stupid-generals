@@ -18,9 +18,10 @@ export function useSocketUpdateContext() {
 }
 
 export default function SocketUpdateProvider({ children }) {
+  const [connected, setConnected] = useState(false);
+  const [clientList, setClientList] = useState([]);
   const [loginErrorState, setLoginErrorState] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
-  const [clientList, setClientList] = useState([]);
   const [hallOfFame, setHallOfFame] = useState([]);
 
   const login = useCallback(({ name, password }) => {
@@ -34,19 +35,19 @@ export default function SocketUpdateProvider({ children }) {
   useEffect(() => {
 
     socket.on('connect', () => {
-      console.log('connected');
+      setConnected(true);
 
       socket.on('loginSuccess', () => {
-        console.log('loginSuccess event received');
         setLoggedIn(true);
       });
+      socket.on('logout', () => {
+        setLoggedIn(false);
+      })
       socket.on('loginFailure', () => {
-        console.log('loginFailure event received');
         setLoginErrorState(true);
       });
       socket.on('registrationSuccess', (regstrationSuccessEvent) => {
         const { name, password } = regstrationSuccessEvent;
-        console.log('registrationSuccess event received');
         // Set the name and password values in local storage under the key 'stupidGenerals'
         localStorage.setItem('stupidGeneralsCredentials', JSON.stringify({ name, password }));
       });
@@ -55,6 +56,9 @@ export default function SocketUpdateProvider({ children }) {
       });
       socket.on('hallOfFame', (data) => {
         setHallOfFame(data);
+      });
+      socket.on('disconnect', () => {
+        setConnected(false);
       });
     });
 
@@ -65,7 +69,7 @@ export default function SocketUpdateProvider({ children }) {
   }, []);
 
   return (
-    <SocketContext.Provider value={{ clientList, hallOfFame, loggedIn, loginErrorState, login, register, setLoginErrorState }}>
+    <SocketContext.Provider value={{ clientList, connected, hallOfFame, loggedIn, loginErrorState, login, register, setLoginErrorState }}>
       {children}
     </SocketContext.Provider>
   );

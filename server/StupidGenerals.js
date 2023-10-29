@@ -1,4 +1,5 @@
 const Player = require('./Player.js');
+const Games = require('./Games.js');
 
 
 class StupidGenerals {
@@ -6,6 +7,7 @@ class StupidGenerals {
     this.socket = socket;
     this.dataBase = dataBase;
     this.clients = [];
+    this.games = new Games();
   }
 
   attemptToLogin(loginEvent) {
@@ -69,11 +71,15 @@ class StupidGenerals {
   start() {
     this.intervalIntegerId = setInterval(() => {
       this.tick();
-    }, 1000 / 2)
+    }, 1000 / 1)
   }
 
   stop() {
     clearInterval(this.intervalIntegerId);
+    //send a logout event to all clients
+    this.clients.forEach((client) => {
+      this.socket.to(client.socketId).emit('logout');
+    });
   }
 
   tick() {
@@ -82,6 +88,8 @@ class StupidGenerals {
       this.socket.to(client.socketId).emit('userNamesList', this.getUserNamesList(client.name));
       if (this.tickCount % 60 === 0) this.socket.to(client.socketId).emit('hallOfFame', this.getHallOfFame(client.name));
     });
+
+    this.games.tick();
     this.tickCount++;
   }
 }

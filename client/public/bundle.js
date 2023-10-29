@@ -4361,10 +4361,12 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 function Lobby() {
   var _useSocketUpdateConte = (0,_SocketUpdateProvider_js__WEBPACK_IMPORTED_MODULE_3__.useSocketUpdateContext)(),
-    loggedIn = _useSocketUpdateConte.loggedIn;
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    loggedIn = _useSocketUpdateConte.loggedIn,
+    connected = _useSocketUpdateConte.connected;
+  return connected ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
       display: 'flex',
       flexDirection: 'row',
@@ -4378,11 +4380,11 @@ function Lobby() {
     style: {
       width: '50%'
     }
-  }, !loggedIn ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_StupidGeneralNameInput_js__WEBPACK_IMPORTED_MODULE_2__["default"], null) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_GeneralsMainDisplay_js__WEBPACK_IMPORTED_MODULE_5__["default"], null)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+  }, loggedIn ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_GeneralsMainDisplay_js__WEBPACK_IMPORTED_MODULE_5__["default"], null) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_StupidGeneralNameInput_js__WEBPACK_IMPORTED_MODULE_2__["default"], null)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
       width: '25%'
     }
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_HallOfFame_js__WEBPACK_IMPORTED_MODULE_4__["default"], null)));
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_HallOfFame_js__WEBPACK_IMPORTED_MODULE_4__["default"], null))) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null);
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Lobby);
 
@@ -4423,20 +4425,24 @@ function SocketUpdateProvider(_ref) {
   var children = _ref.children;
   var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
     _useState2 = _slicedToArray(_useState, 2),
-    loginErrorState = _useState2[0],
-    setLoginErrorState = _useState2[1];
-  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+    connected = _useState2[0],
+    setConnected = _useState2[1];
+  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
     _useState4 = _slicedToArray(_useState3, 2),
-    loggedIn = _useState4[0],
-    setLoggedIn = _useState4[1];
-  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
+    clientList = _useState4[0],
+    setClientList = _useState4[1];
+  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
     _useState6 = _slicedToArray(_useState5, 2),
-    clientList = _useState6[0],
-    setClientList = _useState6[1];
-  var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
+    loginErrorState = _useState6[0],
+    setLoginErrorState = _useState6[1];
+  var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
     _useState8 = _slicedToArray(_useState7, 2),
-    hallOfFame = _useState8[0],
-    setHallOfFame = _useState8[1];
+    loggedIn = _useState8[0],
+    setLoggedIn = _useState8[1];
+  var _useState9 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
+    _useState10 = _slicedToArray(_useState9, 2),
+    hallOfFame = _useState10[0],
+    setHallOfFame = _useState10[1];
   var login = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function (_ref2) {
     var name = _ref2.name,
       password = _ref2.password;
@@ -4455,19 +4461,19 @@ function SocketUpdateProvider(_ref) {
   }, []);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
     socket.on('connect', function () {
-      console.log('connected');
+      setConnected(true);
       socket.on('loginSuccess', function () {
-        console.log('loginSuccess event received');
         setLoggedIn(true);
       });
+      socket.on('logout', function () {
+        setLoggedIn(false);
+      });
       socket.on('loginFailure', function () {
-        console.log('loginFailure event received');
         setLoginErrorState(true);
       });
       socket.on('registrationSuccess', function (regstrationSuccessEvent) {
         var name = regstrationSuccessEvent.name,
           password = regstrationSuccessEvent.password;
-        console.log('registrationSuccess event received');
         // Set the name and password values in local storage under the key 'stupidGenerals'
         localStorage.setItem('stupidGeneralsCredentials', JSON.stringify({
           name: name,
@@ -4480,6 +4486,9 @@ function SocketUpdateProvider(_ref) {
       socket.on('hallOfFame', function (data) {
         setHallOfFame(data);
       });
+      socket.on('disconnect', function () {
+        setConnected(false);
+      });
     });
     return function () {
       socket.disconnect();
@@ -4489,6 +4498,7 @@ function SocketUpdateProvider(_ref) {
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(SocketContext.Provider, {
     value: {
       clientList: clientList,
+      connected: connected,
       hallOfFame: hallOfFame,
       loggedIn: loggedIn,
       loginErrorState: loginErrorState,
@@ -45440,7 +45450,7 @@ function hasBinary(obj, toJSON) {
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("46d02121630b8f1d1ed1")
+/******/ 		__webpack_require__.h = () => ("fecf711bab30c298c5c4")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

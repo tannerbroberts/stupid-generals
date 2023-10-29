@@ -47,6 +47,7 @@ stupidGenerals.start()
 // Listen for the interrupt signal (ctrl-c)
 process.on('SIGINT', () => {
 	console.log('\n\nstopping server, saving data... okay, not really, but eventually\n')
+	stupidGenerals.stop()
 	process.exit()
 })
 
