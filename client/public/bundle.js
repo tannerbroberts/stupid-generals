@@ -4309,7 +4309,6 @@ __webpack_require__.r(__webpack_exports__);
 function HallOfFame() {
   var _useSocketUpdateConte = (0,_SocketUpdateProvider_js__WEBPACK_IMPORTED_MODULE_1__.useSocketUpdateContext)(),
     hallOfFame = _useSocketUpdateConte.hallOfFame;
-  console.log('hallOfFame', hallOfFame);
   var listStyle = {
     height: 'calc(100vh - 100px)',
     overflowY: 'scroll',
@@ -45450,7 +45449,7 @@ function hasBinary(obj, toJSON) {
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("fecf711bab30c298c5c4")
+/******/ 		__webpack_require__.h = () => ("42a6451220d17ae95c59")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */

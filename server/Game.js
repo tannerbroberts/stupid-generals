@@ -1,17 +1,18 @@
 const Player = require('./Player');
+const Map = require('./Map');
 
 class Game {
-  constructor(socket, dataBase, configuration) {
+  constructor(socket, dataBase, config) {
     this.socket = socket;
     this.dataBase = dataBase;
 
-    const { socketIds, mapSize, cityConcentration, mountainConcentration, swampConcentration, fogOfWar } = configuration;
+    const { socketIds, size, cityConcentration, mountainConcentration, swampConcentration, fogOfWar } = config;
     this.players = [];
     socketIds.forEach((socketId) => {
       this.players.push(new Player(socketId));
     });
 
-    const mapConfig = { mapSize, cityConcentration, mountainConcentration, swampConcentration, fogOfWar };
+    const mapConfig = { size, cityConcentration, mountainConcentration, swampConcentration, fogOfWar };
     this.map = new Map(mapConfig);
 
     this.tiles = this.generateTiles();
@@ -30,3 +31,5 @@ class Game {
     // update game state based on player moves
   }
 }
+
+module.exports = Game;

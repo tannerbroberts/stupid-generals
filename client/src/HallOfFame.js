@@ -3,7 +3,6 @@ import { useSocketUpdateContext } from './SocketUpdateProvider.js';
 
 function HallOfFame() {
   const { hallOfFame } = useSocketUpdateContext();
-  console.log('hallOfFame', hallOfFame)
 
   const listStyle = {
     height: 'calc(100vh - 100px)',

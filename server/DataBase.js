@@ -44,13 +44,11 @@ class DataBase {
     if (this.userProfileExists(name)) return false
     // Create the user
     const user = { name, password }
-    console.log('saving user', user)
     this.saveUser(user)
     return true
   }
 
   saveUser(user) {
-    console.log('saveUser', user)
     if (!user.name) throw new Error(`using saveUser on a user that doesn't have a name`)
     if (!user.password) throw new Error(`using saveUser on a user that doesn't have a password`)
     fs.writeFileSync(getUserFolder(user.name), JSON.stringify(user))

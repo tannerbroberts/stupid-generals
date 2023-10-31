@@ -3,7 +3,16 @@ const Game = require('./Game.js');
 class Games {
   constructor(socket, dataBase) {
     this.games = [];
-    this.games.push(new Game(socket, dataBase));
+
+    const config = {
+      socketIds: ['socket1', 'socket2'],
+      mapSize: 10,
+      cityConcentration: 0.05,
+      mountainConcentration: 0.05,
+      swampConcentration: 0.05,
+      fogOfWar: false,
+    }
+    this.games.push(new Game(socket, dataBase, config));
     this.socket = socket;
     this.dataBase = dataBase;
   }

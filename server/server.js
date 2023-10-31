@@ -27,20 +27,6 @@ const io = new SocketIO(server)
 const dataBase = new DataBase()
 const stupidGenerals = new StupidGenerals(io, dataBase)
 
-io.on('connection', (socket) => {
-	const socketId = socket.id
-
-	socket.on('disconnect', () => { stupidGenerals.removeClient(socket.id) })
-	socket.on('login', (data) => { stupidGenerals.attemptToLogin({ ...data, socketId }) })
-	socket.on('register', (data) => { stupidGenerals.attemptToRegisterClient({ ...data, socketId }) })
-
-	socket.on('sendChallenge', () => { })
-	socket.on('acceptChallenge', () => { })
-	socket.on('cancelChallenge', () => { })
-	socket.on('declineChallenge', () => { })
-	socket.on('clientMoves', () => { })
-})
-
 // Start the game
 stupidGenerals.start()
 

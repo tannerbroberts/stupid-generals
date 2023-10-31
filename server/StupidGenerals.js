@@ -6,65 +6,89 @@ class StupidGenerals {
   constructor(socket, dataBase) {
     this.socket = socket;
     this.dataBase = dataBase;
-    this.clients = [];
-    this.games = new Games();
+    this.loggedInClients = [];
+    this.games = new Games(socket, dataBase);
+    socket.on('connection', (socket) => {
+      socket.on('login', (data) => this.attemptToLogin(socket.id, data))
+      socket.on('register', (data) => this.attemptToRegisterClient(socket.id, data))
+      socket.on('loggout', () => this.loggout(socket.id))
+      // socket.on('disconnect', () => this.loggout(socket.id))
+    });
   }
 
-  attemptToLogin(loginEvent) {
-    const { name, password, socketId } = loginEvent;
+  attemptToLogin(socketId, loginEvent) {
+    if (!socketId) throw new Error('attemptToLogin socketId is undefined');
+    if (!loginEvent) throw new Error('attemptToLogin loginEvent is undefined');
+    if (!loginEvent.name) console.log('login attempt missing name');
+    if (!loginEvent.password) console.log('login attempt missing password');
+
+    console.log('loginEvent', loginEvent)
+    const { name } = loginEvent;
 
     // Check if the client is already logged in somewhere else
-    if (this.clients.find((client) => client.name === name)) {
-      console.log('loginFailure event emitted');
+    if (this.loggedInClients.find((client) => client.name === name)) {
       this.socket.to(socketId).emit('loginFailure');
       return;
     }
     // Check the database for the client's name and password
     if (this.dataBase.login(loginEvent)) {
-      console.log('loginSuccess event emitted');
       this.socket.to(socketId).emit('loginSuccess');
-      this.clients.push(new Player(name, socketId));
+      const loggedInClients = { name, socketId };
+      this.updateClients(loggedInClients, 'add')
     } else {
-      console.log('loginFailure event emitted');
       this.socket.to(socketId).emit('loginFailure');
     }
   }
 
-  attemptToRegisterClient(registrationEvent) {
-    const { name, password, socketId } = registrationEvent;
+  attemptToRegisterClient(socketId, registrationEvent) {
+    if (!socketId) throw new Error('attemptToRegisterClient socketId is undefined');
+    if (!registrationEvent) throw new Error('attemptToRegisterClient registrationEvent is undefined');
+    if (!registrationEvent.name) console.log('registration attempt missing name');
+    if (!registrationEvent.password) console.log('registration attempt missing password');
+
+    const { name, password } = registrationEvent;
     // Check the database for the client's name
     if (this.dataBase.registerNewUser(registrationEvent)) {
-      this.socket.to(socketId).emit('registrationSuccess', { name, password });
 
-      const loginEvent = { name, password, socketId };
-      this.attemptToLogin(loginEvent);
+      const registrationSuccessEvent = { name, password };
+      this.socket.to(socketId).emit('registrationSuccess', registrationSuccessEvent);
+
+      const loginEvent = { name, password };
+      this.attemptToLogin(socketId, loginEvent);
     } else {
       this.socket.to(socketId).emit('loginFailure');
     }
-  }
-
-  getClients() {
-    return this.clients
   }
 
   getHallOfFame(name) {
+    if (!name) throw new Error('getHallOfFame name is undefined');
+
     return this.dataBase.getHallOfFame().map((entry) => entry.name === name ? { name: entry, you: true } : { name: entry, you: false });
   }
 
   getUserNamesList(name) {
-    return this.getClients().map((client) => client.name === name ? { name: client.name, you: true } : { name: client.name, you: false });
+    if (!name) throw new Error('getUserNamesList name is undefined');
+
+    return this.loggedInClients.map((client) => client.name === name ? { name: client.name, you: true } : { name: client.name, you: false });
   }
 
-  removeClient(socketId) {
-    this.clients = this.clients.filter((client) => client.socketId !== socketId);
+  loggout(socketId) {
+    if (!socketId) throw new Error('loggout socketId is undefined');
+
+    const client = this.loggedInClients.find((client) => client.socketId === socketId);
+    if (client) {
+      this.updateClients(client, 'remove')
+      this.socket.to(socketId).emit('logout');
+    }
   }
 
   removeStaleClients() {
-    this.clients.forEach((client) => {
-      const socket = this.socket.sockets.connected[client.socketId];
-      if (!socket || !socket.connected) {
-        this.removeClient(client.socketId);
-      }
+    // If a client's socket connection is closed, remove them from the loggedInClients array
+    this.loggedInClients = this.loggedInClients.filter((client) => {
+      const socket = this.socket.sockets.sockets.get(client.socketId);
+      if (socket) return true;
+      console.log(`removing stale client ${client.name}`);
+      return false;
     });
   }
 
@@ -76,21 +100,36 @@ class StupidGenerals {
 
   stop() {
     clearInterval(this.intervalIntegerId);
-    //send a logout event to all clients
-    this.clients.forEach((client) => {
+    //send a logout event to all loggedInClients
+    this.loggedInClients.forEach((client) => {
       this.socket.to(client.socketId).emit('logout');
     });
   }
 
   tick() {
-    // emit the user names list to all logged in clients
-    this.clients.forEach((client) => {
+
+    this.removeStaleClients();
+
+    // emit the user names list to all logged in loggedInClients
+    this.loggedInClients.forEach((client) => {
       this.socket.to(client.socketId).emit('userNamesList', this.getUserNamesList(client.name));
       if (this.tickCount % 60 === 0) this.socket.to(client.socketId).emit('hallOfFame', this.getHallOfFame(client.name));
     });
 
     this.games.tick();
     this.tickCount++;
+  }
+
+  updateClients(client, action) {
+
+    if (action !== 'add' && action !== 'remove') throw new Error('updateClients action must be "add" or "remove"');
+    if (action === 'add') {
+      this.loggedInClients.push(client)
+      console.log(`+ [${this.loggedInClients.length}]`)
+    } else if (action === 'remove') {
+      this.loggedInClients = this.loggedInClients.filter((loggedInClients) => loggedInClients.name !== client.name);
+      console.log(`- [${this.loggedInClients.length}]`)
+    }
   }
 }
 
