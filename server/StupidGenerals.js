@@ -8,11 +8,10 @@ class StupidGenerals {
     this.dataBase = dataBase;
     this.loggedInClients = [];
     this.games = new Games(socket, dataBase);
-    socket.on('connection', (socket) => {
-      socket.on('login', (data) => this.attemptToLogin(socket.id, data))
-      socket.on('register', (data) => this.attemptToRegisterClient(socket.id, data))
-      socket.on('loggout', () => this.loggout(socket.id))
-      // socket.on('disconnect', () => this.loggout(socket.id))
+    socket.on('connection', (instance) => {
+      instance.on('login', (data) => this.attemptToLogin(instance.id, data))
+      instance.on('register', (data) => this.attemptToRegisterClient(instance.id, data))
+      instance.on('loggout', () => this.loggout(instance.id))
     });
   }
 
@@ -26,7 +25,7 @@ class StupidGenerals {
     const { name } = loginEvent;
 
     // Check if the client is already logged in somewhere else
-    if (this.loggedInClients.find((client) => client.name === name)) {
+    if (this.getLoggedInClients().find((client) => client.name === name)) {
       this.socket.to(socketId).emit('loginFailure');
       return;
     }
@@ -66,16 +65,20 @@ class StupidGenerals {
     return this.dataBase.getHallOfFame().map((entry) => entry.name === name ? { name: entry, you: true } : { name: entry, you: false });
   }
 
+  getLoggedInClients() {
+    return [...this.loggedInClients]
+  }
+
   getUserNamesList(name) {
     if (!name) throw new Error('getUserNamesList name is undefined');
 
-    return this.loggedInClients.map((client) => client.name === name ? { name: client.name, you: true } : { name: client.name, you: false });
+    return this.getLoggedInClients().map((client) => client.name === name ? { name: client.name, you: true } : { name: client.name, you: false });
   }
 
   loggout(socketId) {
     if (!socketId) throw new Error('loggout socketId is undefined');
 
-    const client = this.loggedInClients.find((client) => client.socketId === socketId);
+    const client = this.getLoggedInClients().find((client) => client.socketId === socketId);
     if (client) {
       this.updateClients(client, 'remove')
       this.socket.to(socketId).emit('logout');
@@ -84,7 +87,7 @@ class StupidGenerals {
 
   removeStaleClients() {
     // If a client's socket connection is closed, remove them from the loggedInClients array
-    this.loggedInClients.forEach((client) => {
+    this.getLoggedInClients().forEach((client) => {
       const socket = this.socket.sockets.sockets.get(client.socketId);
       if (socket) return;
       console.log(`removing stale client ${client.name}`);
@@ -101,7 +104,7 @@ class StupidGenerals {
   stop() {
     clearInterval(this.intervalIntegerId);
     //send a logout event to all loggedInClients
-    this.loggedInClients.forEach((client) => {
+    this.getLoggedInClients().forEach((client) => {
       this.socket.to(client.socketId).emit('logout');
     });
   }
@@ -111,7 +114,7 @@ class StupidGenerals {
     this.removeStaleClients();
 
     // emit the user names list to all logged in loggedInClients
-    this.loggedInClients.forEach((client) => {
+    this.getLoggedInClients().forEach((client) => {
       this.socket.to(client.socketId).emit('userNamesList', this.getUserNamesList(client.name));
       if (this.tickCount % 60 === 0) this.socket.to(client.socketId).emit('hallOfFame', this.getHallOfFame(client.name));
     });
