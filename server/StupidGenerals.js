@@ -84,11 +84,11 @@ class StupidGenerals {
 
   removeStaleClients() {
     // If a client's socket connection is closed, remove them from the loggedInClients array
-    this.loggedInClients = this.loggedInClients.filter((client) => {
+    this.loggedInClients.forEach((client) => {
       const socket = this.socket.sockets.sockets.get(client.socketId);
-      if (socket) return true;
+      if (socket) return;
       console.log(`removing stale client ${client.name}`);
-      return false;
+      this.updateClients(client, 'remove')
     });
   }
 
