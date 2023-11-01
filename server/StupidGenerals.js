@@ -1,13 +1,18 @@
 const Player = require('./Player.js');
-const Games = require('./Games.js');
+const GameSlotHandler = require('./GameSlotHandler.js');
 
-
+/**
+  * User interactions:
+  * A player logs in
+  * A player registers
+  * A player logs out
+ */
 class StupidGenerals {
   constructor(socket, dataBase) {
     this.socket = socket;
     this.dataBase = dataBase;
     this.loggedInClients = [];
-    this.games = new Games(socket, dataBase);
+    this.gameSlotHandler = new GameSlotHandler(socket, dataBase);
     socket.on('connection', (instance) => {
       instance.on('login', (data) => this.attemptToLogin(instance.id, data))
       instance.on('register', (data) => this.attemptToRegisterClient(instance.id, data))
@@ -32,8 +37,8 @@ class StupidGenerals {
     // Check the database for the client's name and password
     if (this.dataBase.login(loginEvent)) {
       this.socket.to(socketId).emit('loginSuccess');
-      const loggedInClients = { name, socketId };
-      this.updateClients(loggedInClients, 'add')
+      const loggedInClient = { name, socketId };
+      this.setLoggedInClients(loggedInClient, 'add')
     } else {
       this.socket.to(socketId).emit('loginFailure');
     }
@@ -80,7 +85,7 @@ class StupidGenerals {
 
     const client = this.getLoggedInClients().find((client) => client.socketId === socketId);
     if (client) {
-      this.updateClients(client, 'remove')
+      this.setLoggedInClients(client, 'remove')
       this.socket.to(socketId).emit('logout');
     }
   }
@@ -91,13 +96,14 @@ class StupidGenerals {
       const socket = this.socket.sockets.sockets.get(client.socketId);
       if (socket) return;
       console.log(`removing stale client ${client.name}`);
-      this.updateClients(client, 'remove')
+      this.setLoggedInClients(client, 'remove')
     });
   }
 
   start() {
     this.intervalIntegerId = setInterval(() => {
       this.tick();
+      this.tickCount++;
     }, 1000 / 1)
   }
 
@@ -109,23 +115,22 @@ class StupidGenerals {
     });
   }
 
-  tick() {
+  tick(tickCount) {
 
     this.removeStaleClients();
 
     // emit the user names list to all logged in loggedInClients
     this.getLoggedInClients().forEach((client) => {
       this.socket.to(client.socketId).emit('userNamesList', this.getUserNamesList(client.name));
-      if (this.tickCount % 60 === 0) this.socket.to(client.socketId).emit('hallOfFame', this.getHallOfFame(client.name));
+      if (tickCount % 60 === 0) this.socket.to(client.socketId).emit('hallOfFame', this.getHallOfFame(client.name));
     });
 
-    this.games.tick();
-    this.tickCount++;
+    this.gameSlotHandler.tick(tickCount);
   }
 
-  updateClients(client, action) {
+  setLoggedInClients(client, action) {
 
-    if (action !== 'add' && action !== 'remove') throw new Error('updateClients action must be "add" or "remove"');
+    if (action !== 'add' && action !== 'remove') throw new Error('setLoggedInClients action must be "add" or "remove"');
     if (action === 'add') {
       this.loggedInClients.push(client)
       console.log(`+ [${this.loggedInClients.length}]`)
