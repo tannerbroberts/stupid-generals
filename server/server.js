@@ -3,42 +3,37 @@ const http = require('http')
 const { Server: SocketIO } = require('socket.io')
 const cors = require('cors')
 const path = require('path')
-const DataBase = require('./DataBase.js')
 const StupidGenerals = require('./StupidGenerals.js')
+const { dataBaseConnect, getCollection, getDb } = require('./DataBase.js')
 
 const app = express()
-// Create a server and enable cors
 const server = http.createServer(app)
-
 app.use(cors())
 app.use(express.static('client/public'))
-
-// Define a mime type for .map files so I can serve the source maps
 express.static.mime.define({ 'application/json': ['map'] })
 
-// Define a single route for every URL (the react client does the routing)
 app.get('*', (req, res) => {
-	// send the react index.html file
 	res.sendFile(path.join(__dirname, '../client/public/index.html'))
 })
 
-// All the socket event handlers
+// Start the socket server
 const io = new SocketIO(server)
-const dataBase = new DataBase()
-const stupidGenerals = new StupidGenerals(io, dataBase)
+let stupidGenerals = null;
 
-// Start the game
-stupidGenerals.start()
+// Connect to the database first
+const port = process.env.PORT || 8001
+dataBaseConnect().then(() => {
+	// Once the database is connected, start the server
+	server.listen(port, () => {
+		stupidGenerals = new StupidGenerals(io)
+		console.log(`Server is running on port ${port}`)
+		stupidGenerals.start()
+	})
+})
 
 // Listen for the interrupt signal (ctrl-c)
 process.on('SIGINT', () => {
 	console.log('\n\nstopping server, saving data... okay, not really, but eventually\n')
 	stupidGenerals.stop()
 	process.exit()
-})
-
-// Start the server
-const port = process.env.PORT || 8001
-server.listen(port, () => {
-	console.log(`Server is running on port ${port}`)
 })

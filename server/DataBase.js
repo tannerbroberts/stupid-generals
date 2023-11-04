@@ -1,74 +1,44 @@
-const fs = require('fs')
-const folderPath = './server/database/'
-// A class that handles saving stringified JSON to a file by file name, and loading it back in
+const { MongoClient, ServerApiVersion } = require('mongodb');
 
-class DataBase {
-  // Create the folders if they don't exist
-  constructor() {
-    // If the database's folder doesn't exist, create it
-    if (!fs.existsSync(folderPath)) {
-      fs.mkdirSync(folderPath)
-      // Create the users folder
-      fs.mkdirSync(folderPath + '/users')
-    }
+const dataBaseURI = "mongodb+srv://root:0tanner1is2the3best4@nodecluster.cjoru.mongodb.net/?retryWrites=true&w=majority";
+// Create a MongoClient with a MongoClientOptions object to set the Stable API version
+const mongoClient = new MongoClient(dataBaseURI, {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
   }
+});
 
-  getHallOfFame() {
-    // If the hallOfFame file doesn't exist, create it
-    if (!fs.existsSync(folderPath + 'hallOfFame.json')) {
-      fs.writeFileSync(folderPath + 'hallOfFame.json', JSON.stringify(['no entries yet']))
-      return [{ name: 'no entries yet', you: false }]
-    }
-    return JSON.parse(fs.readFileSync(folderPath + 'hallOfFame.json'))
+let _db;
+let _stupidGeneralsCollection;
+
+const dataBaseName = 'tannerDatabase'
+const collectionName = 'stupidGenerals'
+
+async function dataBaseConnect() {
+
+  try {
+    // Don't do anything until the database is connected (through the use of async/await)
+    await mongoClient.connect();
+    _db = mongoClient.db(dataBaseName);
+    _stupidGeneralsCollection = _db.collection(collectionName);
+  } catch (err) {
+    console.log(err.stack);
+    await mongoClient.close();
+  } finally {
+
   }
-
-  loadUser(name) {
-    if (!this.userProfileExists(name)) throw new Error(`using getUser on a user that doesn't exist`)
-    const user = fs.readFileSync(getUserFolder(name))
-    return JSON.parse(user)
-  }
-
-  login(loginEvent) {
-    const { name, password } = loginEvent;
-    // Check if the user exists
-    if (!this.userProfileExists(name)) return false
-    // Check if the password matches
-    if (!this.userPasswordMatches(name, password)) return false
-
-    return true
-  }
-
-  registerNewUser(registrationEvent) {
-    const { name, password } = registrationEvent;
-    // Check if the user exists
-    if (this.userProfileExists(name)) return false
-    // Create the user
-    const user = { name, password }
-    this.saveUser(user)
-    return true
-  }
-
-  saveUser(user) {
-    if (!user.name) throw new Error(`using saveUser on a user that doesn't have a name`)
-    if (!user.password) throw new Error(`using saveUser on a user that doesn't have a password`)
-    fs.writeFileSync(getUserFolder(user.name), JSON.stringify(user))
-  }
-
-  userProfileExists(name) {
-    if (!name) throw new Error(`using userProfileExists without a name argument`)
-    return fs.existsSync(getUserFolder(name))
-  }
-
-  userPasswordMatches(name, password) {
-    if (!this.userProfileExists(name)) throw new Error(`using userPasswordMatches on a user that doesn't exist`)
-    const user = this.loadUser(name)
-    return user.password === password
-  }
-
 }
 
-function getUserFolder(name) {
-  return `${folderPath}/users/${name}.json`
+function getDb() {
+  if (!_db) throw new Error('attemping to use database before connecting');
+  return _db;
 }
 
-module.exports = DataBase
+function getStupidGeneralsCollection() {
+  if (!_stupidGeneralsCollection) throw new Error('attemping to use collection before instanciating');
+  return _stupidGeneralsCollection;
+}
+
+module.exports = { dataBaseConnect, getDb, getStupidGeneralsCollection };

@@ -8,11 +8,11 @@ const GameSlotHandler = require('./GameSlotHandler.js');
   * A player logs out
  */
 class StupidGenerals {
-  constructor(socket, dataBase) {
+  constructor(socket, db) {
     this.socket = socket;
-    this.dataBase = dataBase;
+    this.db = db;
     this.loggedInClients = [];
-    this.gameSlotHandler = new GameSlotHandler(socket, dataBase);
+    // this.gameSlotHandler = new GameSlotHandler(socket, db);
     socket.on('connection', (instance) => {
       instance.on('login', (data) => this.attemptToLogin(instance.id, data))
       instance.on('register', (data) => this.attemptToRegisterClient(instance.id, data))
@@ -35,7 +35,7 @@ class StupidGenerals {
       return;
     }
     // Check the database for the client's name and password
-    if (this.dataBase.login(loginEvent)) {
+    if (this.db.login(loginEvent)) {
       this.socket.to(socketId).emit('loginSuccess');
       const loggedInClient = { name, socketId };
       this.setLoggedInClients(loggedInClient, 'add')
@@ -52,7 +52,7 @@ class StupidGenerals {
 
     const { name, password } = registrationEvent;
     // Check the database for the client's name
-    if (this.dataBase.registerNewUser(registrationEvent)) {
+    if (this.db.registerNewUser(registrationEvent)) {
 
       const registrationSuccessEvent = { name, password };
       this.socket.to(socketId).emit('registrationSuccess', registrationSuccessEvent);
@@ -125,7 +125,7 @@ class StupidGenerals {
       if (tickCount % 60 === 0) this.socket.to(client.socketId).emit('hallOfFame', this.getHallOfFame(client.name));
     });
 
-    this.gameSlotHandler.tick(tickCount);
+    // this.gameSlotHandler.tick(tickCount);
   }
 
   setLoggedInClients(client, action) {
