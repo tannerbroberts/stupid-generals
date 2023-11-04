@@ -1,5 +1,6 @@
 const Player = require('./Player.js');
 const GameSlotHandler = require('./GameSlotHandler.js');
+const { getIo } = require('./sockets.js');
 
 /**
   * User interactions:
@@ -8,12 +9,12 @@ const GameSlotHandler = require('./GameSlotHandler.js');
   * A player logs out
  */
 class StupidGenerals {
-  constructor(socket, db) {
-    this.socket = socket;
+  constructor(db) {
+    this.socket = getIo();
     this.db = db;
     this.loggedInClients = [];
-    // this.gameSlotHandler = new GameSlotHandler(socket, db);
-    socket.on('connection', (instance) => {
+    this.gameSlotHandler = new GameSlotHandler();
+    this.socket.on('connection', (instance) => {
       instance.on('login', (data) => this.attemptToLogin(instance.id, data))
       instance.on('register', (data) => this.attemptToRegisterClient(instance.id, data))
       instance.on('loggout', () => this.loggout(instance.id))

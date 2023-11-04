@@ -1,10 +1,10 @@
 const express = require('express')
 const http = require('http')
-const { Server: SocketIO } = require('socket.io')
 const cors = require('cors')
 const path = require('path')
 const StupidGenerals = require('./StupidGenerals.js')
 const { dataBaseConnect, getCollection, getDb } = require('./DataBase.js')
+const { startSocket } = require('./sockets.js')
 
 const app = express()
 const server = http.createServer(app)
@@ -16,17 +16,16 @@ app.get('*', (req, res) => {
 	res.sendFile(path.join(__dirname, '../client/public/index.html'))
 })
 
-// Start the socket server
-const io = new SocketIO(server)
 let stupidGenerals = null;
 
 // Connect to the database first
 const port = process.env.PORT || 8001
 dataBaseConnect().then(() => {
+	startSocket(server)
 	// Once the database is connected, start the server
 	server.listen(port, () => {
-		stupidGenerals = new StupidGenerals(io)
 		console.log(`Server is running on port ${port}`)
+		stupidGenerals = new StupidGenerals()
 		stupidGenerals.start()
 	})
 })
